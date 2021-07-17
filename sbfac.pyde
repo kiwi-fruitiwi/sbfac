@@ -13,17 +13,33 @@ from Vehicle import *
 from random import randint
 
 def setup():
+    global vehicles
+    
     colorMode(HSB, 360, 100, 100, 100)
-    size(1600, 720)
+    size(1200, 700)
     # cam = PeasyCam(this, width/2, height/2, 0, 500)
+    noStroke()
+    vehicles = []
     
     # create the vehicles
+    for i in range(0, 20):
+        v = Vehicle(randint(10, width-10), randint(10, height-10))
+        vehicles.append(v)    
     
     
 def draw():
+    global vehicles
+    
     background(210, 80, 40)    
     fill(0, 100, 80, 80)
     
     # create and display the target
+    # TODO maybe make this ball a mover! - Cody
+    target_pos = PVector(mouseX, mouseY)
+    circle(target_pos.x, target_pos.y, 32)
     
     # display the vehicles
+    for v in vehicles:
+        v.seek(target_pos)
+        v.update()
+        v.show()
