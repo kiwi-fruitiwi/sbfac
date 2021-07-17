@@ -10,14 +10,19 @@ class Vehicle:
         self.max_speed = random(4, 7)
         self.max_force = 0.05
         self.r = 10
+    
+    
+    def flee(self, target):
+        return self.seek(target).mult(-1)
         
     
+    # seek means: steer toward target at maximum speed
     # set this object's acceleration to follow the target it's seeking
     def seek(self, target):
         # remember: target is a location PVector
         
         # our desired velocity is to move at max speed directly toward the target
-        desired = PVector.sub(target, self.pos)
+        desired = PVector.sub(target, self.pos) # difference of positions gives us a direction
         desired.setMag(self.max_speed)
         
         # steering = desired velocity - current velocity 
@@ -26,7 +31,7 @@ class Vehicle:
         desired.limit(self.max_force)
         
         # apply force! be careful of force vs acc
-        self.apply_force(desired)
+        return desired
         
         
     # assume self.mass is 1 so we don't need to worry about mass
