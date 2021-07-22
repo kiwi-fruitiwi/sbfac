@@ -4,11 +4,12 @@
 # which is itself based on Craig Reynolds's paper
 # "Steering Behaviors For Autonomous Characters"
 # 
-# v0.1: project template, Vehicle.py +comments
-# v0.2: basic triangle chases ball with seek
-# v0.3: flee
-# v0.4: pursue, evade
-# v0.5: arrive
+# v0.1:    project template, Vehicle.py +comments
+# v0.2:    basic triangle chases ball with seek
+# v0.3:    flee
+# v0.4:    pursue, evade
+# v0.4.1:  quadratic pursuit + evade in method
+# v0.5:    arrive
     
 
 from Vehicle import *
@@ -26,7 +27,7 @@ def setup():
     seek = True
     
     # create the vehicles
-    for i in range(0, 400):
+    for i in range(0, 20):
         v = Vehicle(randint(10, width-10), randint(10, height-10))
         vehicles.append(v)    
     
@@ -37,6 +38,10 @@ def draw():
     background(210, 80, 40)    
     fill(0, 100, 80, 80)
     
+    quadratic_pursuit()
+    
+    
+    '''
     # create and display the target
     # TODO maybe make this ball a mover! - Cody
     # target_pos = PVector(mouseX, mouseY)
@@ -46,11 +51,16 @@ def draw():
         fill(90, 100, 100, 50)
     else:
         fill(0, 100, 100, 50)
+    '''
     
+    '''
+    # target, which ellipses around our canvas
     target.show()
     target.apply_force(PVector(150*cos(PI/180*frameCount), 150*sin(PI/180*frameCount)))
     target.update()    
     target.edge_wrap()
+    '''
+    
     
     '''
     # display the vehicles in seek and flee mode
@@ -63,6 +73,8 @@ def draw():
         v.show()
     '''
     
+    
+    '''
     # pursue and evade mode
     for v in vehicles:
         if seek:
@@ -72,6 +84,26 @@ def draw():
         v.update()
         v.show()
         v.edge_wrap()
+        v.evade(v)
+    '''
+
+# each vehicle either pursues or evades all other vehicles
+def quadratic_pursuit():
+    global vehicles, seek
+       
+    for i in range(0, len(vehicles)):
+        v = vehicles[i]
+        
+        for j in range(0, len(vehicles)):
+            if i != j:
+                if seek:
+                    v.apply_force(v.pursue(vehicles[j]))
+                else:
+                    v.apply_force(v.evade(vehicles[j]))
+            
+        v.update()
+        v.show()
+        v.edge_wrap()    
         
 
 def mousePressed():
