@@ -5,8 +5,10 @@
 # "Steering Behaviors For Autonomous Characters"
 # 
 # v0.1: project template, Vehicle.py +comments
-# v0.2: basic triangle chases ball
-# v0.3: 
+# v0.2: basic triangle chases ball with seek
+# v0.3: flee
+# v0.4: pursue, evade
+# v0.5: arrive
     
 
 from Vehicle import *
@@ -16,7 +18,7 @@ def setup():
     global vehicles, target, seek
     
     colorMode(HSB, 360, 100, 100, 100)
-    size(1200, 700)
+    size(900, 1000)
     # cam = PeasyCam(this, width/2, height/2, 0, 500)
     noStroke()
     vehicles = []
@@ -70,8 +72,7 @@ def draw():
         v.update()
         v.show()
         v.edge_wrap()
-    
-    
+        
 
 def mousePressed():
     global seek

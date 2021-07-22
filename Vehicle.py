@@ -36,6 +36,8 @@ class Vehicle:
         return desired
     
     
+    # pursue is seek except we predict where our target is going to be based on its velocity
+    # then we seek that predicted location
     def pursue(self, target): 
         # target is not a position vector, but a vehicle 
         # because we need to know its velocity
