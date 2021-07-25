@@ -9,7 +9,8 @@
 # v0.3:    flee
 # v0.4:    pursue, evade
 # v0.4.1:  quadratic pursuit + evade in method
-# v0.5:    arrive
+# v0.5:    draw velocity and acceleration vectors in Vehicle
+# v0.6:    arrive
     
 
 from Vehicle import *
@@ -19,7 +20,7 @@ def setup():
     global vehicles, target, seek
     
     colorMode(HSB, 360, 100, 100, 100)
-    size(900, 1000)
+    size(700, 900)
     # cam = PeasyCam(this, width/2, height/2, 0, 500)
     noStroke()
     vehicles = []
@@ -27,7 +28,7 @@ def setup():
     seek = True
     
     # create the vehicles
-    for i in range(0, 20):
+    for i in range(0, 1):
         v = Vehicle(randint(10, width-10), randint(10, height-10))
         vehicles.append(v)    
     
@@ -38,10 +39,11 @@ def draw():
     background(210, 80, 40)    
     fill(0, 100, 80, 80)
     
-    quadratic_pursuit()
+    # quadratic_pursuit()
     
+    # TODO: test target evade
     
-    '''
+
     # create and display the target
     # TODO maybe make this ball a mover! - Cody
     # target_pos = PVector(mouseX, mouseY)
@@ -51,16 +53,24 @@ def draw():
         fill(90, 100, 100, 50)
     else:
         fill(0, 100, 100, 50)
-    '''
-    
-    '''
+
     # target, which ellipses around our canvas
     target.show()
-    target.apply_force(PVector(150*cos(PI/180*frameCount), 150*sin(PI/180*frameCount)))
+    # target.apply_force(PVector(150*cos(PI/180*frameCount), 150*sin(PI/180*frameCount)))
+    target.pos.x = mouseX
+    target.pos.y = mouseY
     target.update()    
     target.edge_wrap()
-    '''
-    
+
+
+    # arrival demo
+    for v in vehicles:
+        if seek:
+            v.apply_force(v.arrive(target_pos))
+        else:
+            v.apply_force(v.flee(target_pos))
+        v.update()
+        v.show()
     
     '''
     # display the vehicles in seek and flee mode
@@ -73,19 +83,19 @@ def draw():
         v.show()
     '''
     
-    
-    '''
+
     # pursue and evade mode
     for v in vehicles:
         if seek:
             v.apply_force(v.pursue(target))
         else:
             v.apply_force(v.evade(target))
-        v.update()
         v.show()
+        v.update()
         v.edge_wrap()
         v.evade(v)
-    '''
+        
+        
 
 # each vehicle either pursues or evades all other vehicles
 def quadratic_pursuit():
@@ -101,9 +111,9 @@ def quadratic_pursuit():
                 else:
                     v.apply_force(v.evade(vehicles[j]))
             
-        v.update()
         v.show()
         v.edge_wrap()    
+        v.update()
         
 
 def mousePressed():

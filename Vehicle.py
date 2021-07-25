@@ -8,7 +8,7 @@ class Vehicle:
         self.vel = PVector(random(-1, 1), random(-1, 1))
         self.acc = PVector(0, 0)
         self.max_speed = random(3, 5)
-        self.max_force = 0.2
+        self.max_force = 0.4
         self.r = 10
     
     
@@ -36,17 +36,49 @@ class Vehicle:
         return desired
     
     
+    # this function is seek, except the magnitude of our acceleration decreases
+    # as the distance to the target decreases within a threshold radius r
+    def arrive(self, target):
+        # remember: target is a location PVector
+        
+        seek_result = self.seek(target)
+        # our desired velocity is to move at max speed directly toward the target
+        
+        
+        # new arrival code!
+        threshold = 200  # the radius at which we should start slowing down
+        force = PVector.sub(target, self.pos) # difference of positions gives us a direction
+        distance = force.mag()
+        if distance < threshold:
+            f = map(distance, 0, threshold, 0, self.max_speed)
+            force.setMag(f)
+        else:
+            force.setMag(self.max_speed)
+        
+        
+        # steering = desired velocity - current velocity 
+        # we want to convert this direction and magnitude into an acceleration vector
+        force.sub(self.vel)
+        force.limit(self.max_force)
+        
+        # apply force! be careful of force vs acc
+        return force
+    
+    
     # pursue is seek except we predict where our target is going to be based on its velocity
     # then we seek that predicted location
-    def pursue(self, target): 
+    def pursue(self, target):
+        # we want to predict where the target will be based on its velocity
+        # this is the number of frames ahead our prediction is
+        FRAMES_AHEAD = 15 
+          
         # target is not a position vector, but a vehicle 
         # because we need to know its velocity
         target_pos = target.pos.copy()
         
         # we have to copy position and velocity because we don't want to mutate the original copy
         target_prediction = target.vel.copy()
-        
-        target_pos.add(target_prediction.mult(15))
+        target_pos.add(target_prediction.mult(FRAMES_AHEAD))
         
         # fill(210, 80, 80, 50)
         # circle(target_pos.x, target_pos.y, 16)
@@ -82,13 +114,27 @@ class Vehicle:
         
         pushMatrix()
         translate(self.pos.x, self.pos.y)
+        
+        # draw vel vector
+        VEL_VECTOR_SCALE = 10
+        stroke(0, 100, 100, 50)
+        strokeWeight(1)
+        # velocity vector isn't useful because vehicles rotate in that direction
+        # line(0, 0, VEL_VECTOR_SCALE*self.vel.x, VEL_VECTOR_SCALE*self.vel.y)
+        noStroke()
+        
+        # draw acc vector
+        ACC_VECTOR_SCALE = 200
+        stroke(200, 100, 100, 50)
+        line(0, 0, ACC_VECTOR_SCALE*self.acc.x, ACC_VECTOR_SCALE*self.acc.y)
+        noStroke()
+        
         rotate(self.vel.heading())
         # circle(self.pos.x, self.pos.y, self.r*2)
         r = self.r
         triangle(r, 0,
                  -r/2, r/2, 
                  -r/2, -r/2)
-        
         popMatrix()
         # draw the velocity vector
     
@@ -110,7 +156,7 @@ class Target(Vehicle):
         # Vehicle.__init__(self, x, y)
         Vehicle.__init__(self, x, y)
         self.pos = PVector(width/2, height/2-250)
-        self.max_speed = 8
+        self.max_speed = 4
         
         
     def show(self):
