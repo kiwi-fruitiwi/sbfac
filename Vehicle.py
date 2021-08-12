@@ -7,9 +7,9 @@ class Vehicle:
         self.pos = PVector(x, y)
         self.vel = PVector(random(-1, 1), random(-1, 1))
         self.acc = PVector(0, 0)
-        self.max_speed = random(3, 5)
-        self.max_force = 0.4
-        self.r = 10
+        self.max_speed = random(3, 5) * 0.1666
+        self.max_force = random(0.03, 0.10)
+        self.r = 30
     
     
     # this is the inverse of seek; you literally multiply the seek function's returned
@@ -109,9 +109,7 @@ class Vehicle:
         
     # display the object
     def show(self):        
-        # rotate the object to point where its velocity vector points
-        fill(0, 0, 100, 50)
-        
+        # rotate the object to point where its velocity vector points        
         pushMatrix()
         translate(self.pos.x, self.pos.y)
         
@@ -130,13 +128,47 @@ class Vehicle:
         noStroke()
         
         rotate(self.vel.heading())
-        # circle(self.pos.x, self.pos.y, self.r*2)
+        
+        # this is where we draw our object. we're going to try for a 9S Hackbot
+        
         r = self.r
-        triangle(r, 0,
-                 -r/2, r/2, 
-                 -r/2, -r/2)
+        
+        T = 0.4 # how far away is the tip away from the origin?
+        C = 0.2 # what is the radius of the inner circle?
+        B = 0.3 # how far away is the butt away from the origin?
+        
+        fill(0, 0, 100, 50)
+        stroke(0, 0, 0, 100)
+        strokeWeight(1)
+        beginShape()
+        vertex(r, 0) # front tip
+        vertex(0, r*T) # top
+        vertex(-r*T, 0) # butt
+        vertex(0, -r*T) # bottom
+        vertex(r, 0) # front tip
+        endShape()
+        
+        fill(0, 0, 0, 90)
+        circle(0, 0, r*C)
+        stroke(0, 0, 0, 100)
+        strokeWeight(1)
+        line(0, 0, -r*T, 0) # line to the butt
+        
+        x = (r*T)/(sqrt(3)+T)
+        line(0, 0, x, sqrt(3)*x) # line to the top 120 degrees
+        line(0, 0, x, -sqrt(3)*x) # line to the bottom 120 degrees
+        
+        # two little squares in the back
+        rectMode(CENTER)
+        fill(0, 0, 100, 50)
+        strokeWeight(1)
+        square(r*-B, r*T, r*0.2)
+        square(r*-B, -r*T, r*0.2)        
+        
         popMatrix()
-        # draw the velocity vector
+        
+        
+        # draw the velocity vector? unnecessary because we rotate to that direction
     
     
     def edge_wrap(self):

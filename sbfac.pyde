@@ -20,15 +20,17 @@ def setup():
     global vehicles, target, seek
     
     colorMode(HSB, 360, 100, 100, 100)
-    size(700, 900)
+    size(700, 700)
     # cam = PeasyCam(this, width/2, height/2, 0, 500)
     noStroke()
+    frameRate(144)
+    
     vehicles = []
     target = Target(randint(10, width-10), randint(10, height-10))
     seek = True
     
     # create the vehicles
-    for i in range(0, 1):
+    for i in range(0, 12):
         v = Vehicle(randint(10, width-10), randint(10, height-10))
         vehicles.append(v)    
     
