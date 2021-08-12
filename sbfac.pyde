@@ -11,6 +11,7 @@
 # v0.4.1:  quadratic pursuit + evade in method
 # v0.5:    draw velocity and acceleration vectors in Vehicle
 # v0.6:    arrive
+# v0.7:    9S hackbot
     
 
 from Vehicle import *
