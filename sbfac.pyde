@@ -21,19 +21,28 @@ def setup():
     global vehicles, target, seek
     
     colorMode(HSB, 360, 100, 100, 100)
-    size(700, 700)
+    size(1400, 800)
     # cam = PeasyCam(this, width/2, height/2, 0, 500)
     noStroke()
+    noCursor()
     frameRate(144)
-    
-    vehicles = []
+    populate()
+
+
+def populate():
+    global vehicles, target, seek 
     target = Target(randint(10, width-10), randint(10, height-10))
     seek = True
     
     # create the vehicles
-    for i in range(0, 12):
+    vehicles = []
+    for i in range(0, 100):
         v = Vehicle(randint(10, width-10), randint(10, height-10))
-        vehicles.append(v)    
+        vehicles.append(v)
+
+
+def keyPressed():
+    populate()    
     
     
 def draw():
@@ -65,7 +74,7 @@ def draw():
     target.update()    
     target.edge_wrap()
 
-
+    '''
     # arrival demo
     for v in vehicles:
         if seek:
@@ -74,6 +83,7 @@ def draw():
             v.apply_force(v.flee(target_pos))
         v.update()
         v.show()
+    '''
     
     '''
     # display the vehicles in seek and flee mode
@@ -90,7 +100,8 @@ def draw():
     # pursue and evade mode
     for v in vehicles:
         if seek:
-            v.apply_force(v.pursue(target))
+            # v.apply_force(v.pursue(target))
+            v.apply_force(v.arrive(target_pos))
         else:
             v.apply_force(v.evade(target))
         v.show()

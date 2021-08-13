@@ -7,9 +7,9 @@ class Vehicle:
         self.pos = PVector(x, y)
         self.vel = PVector(random(-1, 1), random(-1, 1))
         self.acc = PVector(0, 0)
-        self.max_speed = random(3, 5) * 0.1666
-        self.max_force = random(0.03, 0.10)
-        self.r = 30
+        self.max_speed = random(3, 5)# * 0.1666
+        self.max_force = random(0.2, 0.3)
+        self.r = 20
     
     
     # this is the inverse of seek; you literally multiply the seek function's returned
@@ -127,17 +127,18 @@ class Vehicle:
         line(0, 0, ACC_VECTOR_SCALE*self.acc.x, ACC_VECTOR_SCALE*self.acc.y)
         noStroke()
         
+        # rotate 
         rotate(self.vel.heading())
         
         # this is where we draw our object. we're going to try for a 9S Hackbot
-        
+        # https://puu.sh/I3E19/9d32002c25.png
         r = self.r
         
         T = 0.4 # how far away is the tip away from the origin?
         C = 0.2 # what is the radius of the inner circle?
         B = 0.3 # how far away is the butt away from the origin?
         
-        fill(0, 0, 100, 50)
+        fill(0, 0, 100, 75)
         stroke(0, 0, 0, 100)
         strokeWeight(1)
         beginShape()
