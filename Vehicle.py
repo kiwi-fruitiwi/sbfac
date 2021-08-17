@@ -2,13 +2,13 @@
 # max_speed, max_force, and radius
 
 
-class Vehicle:
+class Vehicle(object):
     def __init__(self, x, y):
         self.pos = PVector(x, y)
         self.vel = PVector(random(-1, 1), random(-1, 1))
         self.acc = PVector(0, 0)
-        self.max_speed = random(3, 5)# * 0.1666
-        self.max_force = random(0.2, 0.3)
+        self.max_speed = random(3, 5) #* 0.1666
+        self.max_force = random(0.02, 0.03)
         self.r = 20
     
     
@@ -106,9 +106,22 @@ class Vehicle:
         self.vel.limit(self.max_speed)
         self.acc = PVector(0, 0)
         
+    
+    # draw the acceleration vector    
+    def show_acc_vector(self):
+        pushMatrix()
+        translate(self.pos.x, self.pos.y)
+        ACC_VECTOR_SCALE = 2000
+        stroke(200, 100, 100, 50)
+        line(0, 0, ACC_VECTOR_SCALE*self.acc.x, ACC_VECTOR_SCALE*self.acc.y)
+        noStroke()    
+        popMatrix()
         
+    
     # display the object
     def show(self):        
+        
+        self.show_acc_vector()
         # rotate the object to point where its velocity vector points        
         pushMatrix()
         translate(self.pos.x, self.pos.y)
@@ -119,12 +132,6 @@ class Vehicle:
         strokeWeight(1)
         # velocity vector isn't useful because vehicles rotate in that direction
         # line(0, 0, VEL_VECTOR_SCALE*self.vel.x, VEL_VECTOR_SCALE*self.vel.y)
-        noStroke()
-        
-        # draw acc vector
-        ACC_VECTOR_SCALE = 200
-        stroke(200, 100, 100, 50)
-        line(0, 0, ACC_VECTOR_SCALE*self.acc.x, ACC_VECTOR_SCALE*self.acc.y)
         noStroke()
         
         # rotate 
@@ -167,8 +174,6 @@ class Vehicle:
         square(r*-B, -r*T, r*0.2)        
         
         popMatrix()
-        
-        
         # draw the velocity vector? unnecessary because we rotate to that direction
     
     
@@ -186,10 +191,10 @@ class Vehicle:
 
 class Target(Vehicle):
     def __init__(self, x, y):
-        # Vehicle.__init__(self, x, y)
-        Vehicle.__init__(self, x, y)
+        super(Target, self).__init__(x, y)
         self.pos = PVector(width/2, height/2-250)
-        self.max_speed = 4
+        self.max_speed = 14
+        self.max_force = 0.1
         
         
     def show(self):
@@ -198,4 +203,5 @@ class Target(Vehicle):
         translate(self.pos.x, self.pos.y)
         rotate(self.vel.heading())
         circle(0, 0, self.r*2)
-        popMatrix()        
+        popMatrix()
+        

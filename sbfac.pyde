@@ -12,13 +12,14 @@
 # v0.5:    draw velocity and acceleration vectors in Vehicle
 # v0.6:    arrive
 # v0.7:    9S hackbot
+# v0.8:    centripetal acceleration of target around center
     
 
 from Vehicle import *
 from random import randint
 
 def setup():
-    global vehicles, target, seek
+    global vehicles, target, seek, planet
     
     colorMode(HSB, 360, 100, 100, 100)
     size(1400, 800)
@@ -26,27 +27,31 @@ def setup():
     noStroke()
     noCursor()
     frameRate(144)
-    populate()
+    repopulate()
 
 
-def populate():
-    global vehicles, target, seek 
+# recreates the vehicle list, resetting the sketch
+def repopulate():
+    global vehicles, target, seek, planet
     target = Target(randint(10, width-10), randint(10, height-10))
     seek = True
     
+    planet = Target(width/2, height/2)
+    planet.vel = PVector(100, 0)
+        
     # create the vehicles
     vehicles = []
-    for i in range(0, 100):
+    for i in range(0, 10):
         v = Vehicle(randint(10, width-10), randint(10, height-10))
         vehicles.append(v)
 
 
 def keyPressed():
-    populate()    
+    repopulate()    
     
     
 def draw():
-    global vehicles, target, seek
+    global vehicles, target, seek, planet
     
     background(210, 80, 40)    
     fill(0, 100, 80, 80)
@@ -73,6 +78,15 @@ def draw():
     target.pos.y = mouseY
     target.update()    
     target.edge_wrap()
+    
+    # we are trying to have centripetal acceleration for our planet object
+    planet.show()
+    planet.update()
+    
+    center = PVector(width/2, height/2)
+    dir = PVector.sub(center, planet.pos)
+    dir.setMag(1)
+    planet.apply_force(dir)
 
     '''
     # arrival demo
@@ -101,9 +115,9 @@ def draw():
     for v in vehicles:
         if seek:
             # v.apply_force(v.pursue(target))
-            v.apply_force(v.arrive(target_pos))
+            v.apply_force(v.arrive(planet.pos))
         else:
-            v.apply_force(v.evade(target))
+            v.apply_force(v.evade(planet))
         v.show()
         v.update()
         v.edge_wrap()
