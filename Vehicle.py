@@ -10,7 +10,9 @@ class Vehicle(object):
         self.max_speed = random(3, 5) #* 0.1666
         self.max_force = random(0.02, 0.03)
         self.r = 20
-    
+        
+        self.ACC_VECTOR_SCALE = 2000
+            
     
     # this is the inverse of seek; you literally multiply the seek function's returned
     # force vector by -1
@@ -95,6 +97,7 @@ class Vehicle(object):
     # assume self.mass is 1 so we don't need to worry about mass
     def apply_force(self, force):
         # F=ma. Since m=1, F=a
+        force.limit(self.max_force)
         self.acc.add(force)
         
     
@@ -108,14 +111,16 @@ class Vehicle(object):
         
     
     # draw the acceleration vector    
+    # TODO: add arrow
     def show_acc_vector(self):
         pushMatrix()
         translate(self.pos.x, self.pos.y)
-        ACC_VECTOR_SCALE = 2000
         stroke(200, 100, 100, 50)
-        line(0, 0, ACC_VECTOR_SCALE*self.acc.x, ACC_VECTOR_SCALE*self.acc.y)
+        strokeWeight(2)
+        line(0, 0, self.ACC_VECTOR_SCALE*self.acc.x, self.ACC_VECTOR_SCALE*self.acc.y)
         noStroke()    
         popMatrix()
+        print self.acc.mag()
         
     
     # display the object
@@ -187,21 +192,4 @@ class Vehicle(object):
             self.pos.y = self.r
         if self.pos.y - self.r < 0:
             self.pos.y = height - self.r
-
-
-class Target(Vehicle):
-    def __init__(self, x, y):
-        super(Target, self).__init__(x, y)
-        self.pos = PVector(width/2, height/2-250)
-        self.max_speed = 14
-        self.max_force = 0.1
-        
-        
-    def show(self):
-        # rotate the object to point where its velocity vector points        
-        pushMatrix()
-        translate(self.pos.x, self.pos.y)
-        rotate(self.vel.heading())
-        circle(0, 0, self.r*2)
-        popMatrix()
         

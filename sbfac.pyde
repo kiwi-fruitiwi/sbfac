@@ -16,16 +16,17 @@
     
 
 from Vehicle import *
+from Target import *
 from random import randint
 
 def setup():
     global vehicles, target, seek, planet
     
     colorMode(HSB, 360, 100, 100, 100)
-    size(1400, 800)
+    size(1400, 900)
     # cam = PeasyCam(this, width/2, height/2, 0, 500)
-    noStroke()
-    noCursor()
+    # noStroke()
+    # noCursor()
     frameRate(144)
     repopulate()
 
@@ -33,15 +34,15 @@ def setup():
 # recreates the vehicle list, resetting the sketch
 def repopulate():
     global vehicles, target, seek, planet
-    target = Target(randint(10, width-10), randint(10, height-10))
-    seek = True
+    # target = Target(randint(10, width-10), randint(10, height-10))
+    target = Target(width/2, 100)
+    target.vel = PVector(1, 0)
     
-    planet = Target(width/2, height/2)
-    planet.vel = PVector(100, 0)
+    seek = True
         
     # create the vehicles
     vehicles = []
-    for i in range(0, 10):
+    for i in range(0, 15):
         v = Vehicle(randint(10, width-10), randint(10, height-10))
         vehicles.append(v)
 
@@ -74,19 +75,16 @@ def draw():
     # target, which ellipses around our canvas
     target.show()
     # target.apply_force(PVector(150*cos(PI/180*frameCount), 150*sin(PI/180*frameCount)))
-    target.pos.x = mouseX
-    target.pos.y = mouseY
+    # target.pos.x = mouseX
+    # target.pos.y = mouseY
     target.update()    
-    target.edge_wrap()
+    # target.edge_wrap()
     
-    # we are trying to have centripetal acceleration for our planet object
-    planet.show()
-    planet.update()
-    
+    # we are trying to have centripetal acceleration for our orbiting target    
     center = PVector(width/2, height/2)
-    dir = PVector.sub(center, planet.pos)
+    dir = PVector.sub(center, target.pos)
     dir.setMag(1)
-    planet.apply_force(dir)
+    target.apply_force(dir)
 
     '''
     # arrival demo
@@ -115,9 +113,9 @@ def draw():
     for v in vehicles:
         if seek:
             # v.apply_force(v.pursue(target))
-            v.apply_force(v.arrive(planet.pos))
+            v.apply_force(v.arrive(target.pos))
         else:
-            v.apply_force(v.evade(planet))
+            v.apply_force(v.evade(target))
         v.show()
         v.update()
         v.edge_wrap()
