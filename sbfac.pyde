@@ -116,7 +116,7 @@ def draw():
             v.apply_force(v.arrive(target.pos))
         else:
             v.apply_force(v.evade(target))
-        v.show()
+        v.show_bee()
         v.update()
         v.edge_wrap()
         v.evade(v)

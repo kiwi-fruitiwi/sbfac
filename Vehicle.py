@@ -121,11 +121,21 @@ class Vehicle(object):
         noStroke()    
         popMatrix()
         print self.acc.mag()
+    
         
+    # display as a bee!
+    def show_bee(self): 
+        bee = loadImage("bee.png")   
+        self.show_acc_vector()
+        pushMatrix()
+        translate(self.pos.x, self.pos.y)
+        
+        image(bee, 0, 0)
+        popMatrix()
+            
     
     # display the object
-    def show(self):        
-        
+    def show(self):                
         self.show_acc_vector()
         # rotate the object to point where its velocity vector points        
         pushMatrix()
